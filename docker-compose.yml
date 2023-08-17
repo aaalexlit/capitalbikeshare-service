@@ -1,0 +1,5 @@
+services:
+  prediction-service:
+    build:
+      context: .
+      env_file: .env
