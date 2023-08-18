@@ -1,21 +1,44 @@
+from pathlib import Path
+from datetime import datetime
+
 import wandb
+import joblib
 import uvicorn
 from fastapi import FastAPI
+
+from schemas import RideInput, PredictionOutput
 
 artifact = wandb.Api().artifact(
     "model-registry/capitalbikeshare-dv-model-pipeline:staging", type="model"
 )
+pipeline_path = Path(artifact.download()) / "pipeline.pkl"
+
+with open(pipeline_path, 'rb') as f_out:
+    pipeline = joblib.load(f_out)
 
 app = FastAPI(
     title="Duration Prediction API",
-    description="API to predict the duration of a trip",
+    description="API to predict the duration of a cycling trip",
     version="1.0",
 )
 
 
-@app.post("/predict")
-def predict() -> dict:
-    return {"duration": 100}
+def prepare_features(ride: RideInput) -> dict:
+    started_at = datetime.strptime(ride.started_at, "%Y-%m-%d %H:%M:%S")
+    return {
+        "start_station_id": ride.start_station_id,
+        "rideable_type": ride.rideable_type,
+        "member_casual": ride.member_casual,
+        "hour": started_at.hour,
+        "year": started_at.year,
+    }
+
+
+@app.post("/predict", response_model=PredictionOutput)
+def predict(ride: RideInput) -> PredictionOutput:
+    features = prepare_features(ride)
+    duration = pipeline.predict(features)[0]
+    return {"duration": duration}
 
 
 @app.get("/healthcheck")

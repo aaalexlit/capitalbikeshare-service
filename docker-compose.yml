@@ -1,5 +1,8 @@
 services:
   prediction-service:
+    platform: linux/amd64
     build:
       context: .
-      env_file: .env
+    env_file: .env
+    ports:
+      - "80:80"

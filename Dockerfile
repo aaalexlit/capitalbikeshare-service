@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.10-slim
 
 RUN pip install -U pip
 RUN pip install pipenv
@@ -10,6 +10,7 @@ COPY Pipfile* ./
 RUN pipenv install --system --deploy
 
 COPY duration_prediction_api.py ./
+COPY schemas.py ./
 
 EXPOSE 8080
 
