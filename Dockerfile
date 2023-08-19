@@ -9,9 +9,8 @@ COPY Pipfile* ./
 
 RUN pipenv install --system --deploy
 
-COPY duration_prediction_api.py ./
-COPY schemas.py ./
+COPY src/* /app/src/
 
 EXPOSE 8080
 
-CMD ["uvicorn", "duration_prediction_api:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "src.duration_prediction_api:app", "--host", "0.0.0.0", "--port", "80"]

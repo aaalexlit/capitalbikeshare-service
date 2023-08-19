@@ -6,7 +6,7 @@ import joblib
 import uvicorn
 from fastapi import FastAPI
 
-from schemas import RideInput, PredictionOutput
+from src.schemas import RideInput, PredictionOutput
 
 artifact = wandb.Api().artifact(
     "model-registry/capitalbikeshare-dv-model-pipeline:staging", type="model"
@@ -27,6 +27,7 @@ def prepare_features(ride: RideInput) -> dict:
     started_at = datetime.strptime(ride.started_at, "%Y-%m-%d %H:%M:%S")
     return {
         "start_station_id": ride.start_station_id,
+        "end_station_id": ride.end_station_id,
         "rideable_type": ride.rideable_type,
         "member_casual": ride.member_casual,
         "hour": started_at.hour,

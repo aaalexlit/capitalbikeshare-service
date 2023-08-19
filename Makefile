@@ -15,3 +15,9 @@ quality_checks:
 setup:
 	pipenv install --dev
 	pre-commit install
+
+run:
+	docker compose up --build -d
+
+stop:
+	docker compose down

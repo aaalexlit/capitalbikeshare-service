@@ -1,21 +1,16 @@
-from schemas import RideInput
-from duration_prediction_api import prepare_features
+from src.utils import load_test_ride
+from src.schemas import RideInput
+from src.duration_prediction_api import prepare_features
 
 
 def test_prepare_features():
-    test_ride = RideInput.model_validate(
-        {
-            "start_station_id": "31239",
-            "rideable_type": "docked_bike",
-            "member_casual": "casual",
-            "started_at": "2020-04-06 07:54:59",
-        }
-    )
+    test_ride = RideInput.model_validate(load_test_ride())
     features = prepare_features(test_ride)
     assert features == {
-        "start_station_id": "31239",
+        "start_station_id": "31205",
+        "end_station_id": "31239",
         "rideable_type": "docked_bike",
-        "member_casual": "casual",
+        "member_casual": "member",
         "hour": 7,
         "year": 2020,
     }
