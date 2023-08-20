@@ -8,10 +8,12 @@ from fastapi import FastAPI
 
 from src.schemas import RideInput, PredictionOutput
 
+BASE_DIR = Path(__file__).resolve(strict=True).parent
+
 artifact = wandb.Api().artifact(
     "model-registry/capitalbikeshare-dv-model-pipeline:staging", type="model"
 )
-pipeline_path = Path(artifact.download()) / "pipeline.pkl"
+pipeline_path = Path(artifact.download(root=BASE_DIR)) / "pipeline.pkl"
 
 with open(pipeline_path, 'rb') as f_out:
     pipeline = joblib.load(f_out)
