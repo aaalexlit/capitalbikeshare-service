@@ -18,7 +18,7 @@ echo "Waiting for the service to spin up"
 sleep 30
 
 echo "Calling dockerized service"
-pipenv run pytest integration-test/test_docker.py
+pipenv run python -m pytest integration-test/test_docker.py
 
 ERROR_CODE=$?
 
