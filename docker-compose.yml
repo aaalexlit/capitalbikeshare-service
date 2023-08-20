@@ -3,6 +3,7 @@ services:
     platform: linux/amd64
     build:
       context: .
-    env_file: .env
+    environment:
+      - WANDB_API_KEY
     ports:
       - "80:80"
