@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
-# cd to the directory where the script is if it's not a github action execution
+# cd to the directory where the script is
+# and set env vars from .env
+# if it's not a github action execution
 if [[ -z "${GITHUB_ACTIONS}" ]]; then
   cd "$(dirname "$0")"
+  source ../.env set
 fi
 
 cd ..
-
-source ../.env set
 
 docker compose up --build -d
 
