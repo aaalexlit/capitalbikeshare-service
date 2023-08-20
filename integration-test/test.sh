@@ -5,7 +5,6 @@
 # if it's not a github action execution
 if [[ -z "${GITHUB_ACTIONS}" ]]; then
   cd "$(dirname "$0")"
-  source ../.env set
 fi
 
 cd ..
