@@ -11,6 +11,7 @@ def test_prepare_features():
         "end_station_id": "31239",
         "rideable_type": "docked_bike",
         "member_casual": "member",
+        "month": 4,
         "hour": 7,
         "year": 2020,
     }

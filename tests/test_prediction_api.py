@@ -8,7 +8,7 @@ client = TestClient(app)
 
 
 def test_prediction():
-    expected_response = {"duration": 12.88}
+    expected_response = {"duration": 12.80}
     actual_response = client.post("/predict", json=load_test_ride())
     print(actual_response.json())
     assert actual_response.status_code == 200

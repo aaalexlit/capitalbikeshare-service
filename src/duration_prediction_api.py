@@ -31,6 +31,7 @@ def prepare_features(ride: RideInput) -> dict:
         "rideable_type": ride.rideable_type,
         "member_casual": ride.member_casual,
         "hour": started_at.hour,
+        "month": started_at.month,
         "year": started_at.year,
     }
 
