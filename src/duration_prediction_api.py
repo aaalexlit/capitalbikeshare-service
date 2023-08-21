@@ -1,28 +1,22 @@
-from pathlib import Path
 from datetime import datetime
 
-import wandb
 import joblib
 import uvicorn
 from fastapi import FastAPI
 
+from src.utils import BASE_DIR
 from src.schemas import RideInput, PredictionOutput
-
-BASE_DIR = Path(__file__).resolve(strict=True).parent
-
-artifact = wandb.Api().artifact(
-    "model-registry/capitalbikeshare-dv-model-pipeline:staging", type="model"
-)
-pipeline_path = Path(artifact.download(root=BASE_DIR)) / "pipeline.pkl"
-
-with open(pipeline_path, 'rb') as f_out:
-    pipeline = joblib.load(f_out)
 
 app = FastAPI(
     title="Duration Prediction API",
     description="API to predict the duration of a cycling trip",
     version="1.0",
 )
+
+
+def load_pipeliine():
+    with open(BASE_DIR / 'pipeline.pkl', 'rb') as f_out:
+        return joblib.load(f_out)
 
 
 def prepare_features(ride: RideInput) -> dict:
@@ -41,7 +35,7 @@ def prepare_features(ride: RideInput) -> dict:
 @app.post("/predict", response_model=PredictionOutput)
 def predict(ride: RideInput) -> PredictionOutput:
     features = prepare_features(ride)
-    duration = pipeline.predict(features)[0]
+    duration = load_pipeliine().predict(features)[0]
     return {"duration": duration}
 
 

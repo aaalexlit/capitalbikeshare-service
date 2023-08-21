@@ -15,7 +15,7 @@ echo "Building and running docker container"
 docker compose up --build -d
 
 echo "Waiting for the service to spin up"
-sleep 30
+sleep 10
 
 echo "Calling dockerized service"
 pipenv run python -m pytest integration-test/test_docker.py

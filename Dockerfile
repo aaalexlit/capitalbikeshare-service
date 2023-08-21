@@ -1,5 +1,7 @@
 FROM python:3.10-slim
 
+ARG WANDB_API_KEY
+
 RUN pip install -U pip
 RUN pip install pipenv
 
@@ -9,7 +11,11 @@ COPY Pipfile* ./
 
 RUN pipenv install --system --deploy
 
-COPY src/* /app/src/
+COPY src/*.py src/
+COPY src/*.json src/
+
+RUN export PYTHONPATH="${PYTHONPATH}:$(pwd)" && \
+    python src/download_model.py $WANDB_API_KEY
 
 EXPOSE 8080
 
