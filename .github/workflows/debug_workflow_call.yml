@@ -1,6 +1,6 @@
 name: Deploy to Amazon ECS
 on:
-  workflow_dispatch:
+  workflow_dispatch
 
 jobs:
   deploy-infra:
