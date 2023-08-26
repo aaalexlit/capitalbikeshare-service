@@ -1,0 +1,21 @@
+name: Deploy to Amazon ECS
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-infra:
+    uses: aaalexlit/capitalbikeshare-service-terraform/.github/workflows/apply.yml@main
+    with:
+      environment: stg
+      ecr-only: false
+
+  deploy:
+    name: Deploy to staging
+    runs-on: ubuntu-latest
+    needs: deploy-infra
+    steps:
+      - name: Print outputs
+        id: print-outputs
+        run: |
+          echo ${{ needs.deploy-infra.outputs.task_definition_json }}
+          echo ${{ needs.deploy-infra.outputs.container_name }}
