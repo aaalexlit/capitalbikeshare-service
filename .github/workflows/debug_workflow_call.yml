@@ -9,7 +9,7 @@ jobs:
       - name: Trigger ECR creation workflow
         shell: bash
         run: |
-          result=$(curl -L \
+          result=$(curl -L -sw '%{http_code}' \
           -X POST \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.PAC_TOKEN_TERRAFORM }}" \
