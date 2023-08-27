@@ -1,6 +1,6 @@
-name: Deploy to Amazon ECS
+name: Test calling workflow
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   deploy-infra:
@@ -8,14 +8,3 @@ jobs:
     with:
       environment: stg
       ecr-only: false
-
-  deploy:
-    name: Deploy to staging
-    runs-on: ubuntu-latest
-    needs: deploy-infra
-    steps:
-      - name: Print outputs
-        id: print-outputs
-        run: |
-          echo ${{ needs.deploy-infra.outputs.task_definition_json }}
-          echo ${{ needs.deploy-infra.outputs.container_name }}
