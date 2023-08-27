@@ -5,6 +5,3 @@ on:
 jobs:
   deploy-infra:
     uses: aaalexlit/capitalbikeshare-service-terraform/.github/workflows/apply.yml@main
-    with:
-      environment: 'stg'
-      ecr-only: false
