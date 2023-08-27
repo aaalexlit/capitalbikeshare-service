@@ -1,11 +1,5 @@
-# This workflow will build and push a new container image to Amazon ECR,
-# and then will deploy a new task definition to Amazon ECS, when there is a push to the "main" branch.
-
 name: Deploy to Amazon ECS
-
 on:
-  # push:
-  #   branches: [ "main" ]
   workflow_dispatch:
 
 env:
@@ -14,9 +8,6 @@ env:
 jobs:
   deploy-infra:
     uses: aaalexlit/capitalbikeshare-service-terraform/.github/workflows/apply.yml@main
-    with:
-      environment: stg
-      ecr-only: false
 
   deploy:
     name: Deploy to staging
