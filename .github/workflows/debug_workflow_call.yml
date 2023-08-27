@@ -1,4 +1,4 @@
-name: Test calling workflow
+name: Test calling TF workflow
 on:
   workflow_dispatch:
 
@@ -6,5 +6,5 @@ jobs:
   deploy-infra:
     uses: aaalexlit/capitalbikeshare-service-terraform/.github/workflows/apply.yml@main
     with:
-      environment: stg
+      environment: 'stg'
       ecr-only: false
