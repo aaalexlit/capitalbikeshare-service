@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve(strict=True).parent
+
 
 def load_test_ride():
     with open(

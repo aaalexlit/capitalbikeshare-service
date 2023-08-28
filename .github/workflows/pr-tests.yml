@@ -1,0 +1,34 @@
+name: PR
+on:
+  pull_request:
+    branches:
+      - develop
+
+env:
+  WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10.12
+      - name: Install dependencies
+        working-directory: ./
+        run: pip install pipenv && pipenv install --dev
+
+      - name: Run unit tests
+        working-directory: ./
+        run: pipenv run pytest tests/
+
+      - name: Lint
+        working-directory: ./
+        run: pipenv run pylint --recursive=y .
+
+      - name: Integration Test
+        working-directory: ./integration-test
+        run: |
+          . test.sh

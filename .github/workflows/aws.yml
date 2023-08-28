@@ -1,0 +1,61 @@
+name: Deploy to Amazon ECS
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-west-2
+
+jobs:
+  deploy-infra:
+    uses: aaalexlit/capitalbikeshare-service-terraform/.github/workflows/apply.yml@main
+
+  deploy:
+    name: Deploy to staging
+    runs-on: ubuntu-latest
+    needs: deploy-infra
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ needs.deploy-infra.outputs.ecr_repository_url }}
+          IMAGE_TAG: latest # ${{ github.sha }}
+          ENVIRONMENT: staging
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg WANDB_API_KEY=${{secrets.WANDB_API_KEY}} .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: ${{ needs.deploy-infra.outputs.task_definition_json }}
+          container-name: ${{ needs.deploy-infra.outputs.container_name }}
+          image: ${{ steps.build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ needs.deploy-infra.outputs.ecs_service }}
+          cluster: ${{ needs.deploy-infra.outputs.ecs_cluster }}
+          wait-for-service-stability: true

@@ -23,7 +23,7 @@ make stop
 ```
 
 ## Local development
-Also, the conda environment created in the [main repo](https://github.com/aaalexlit/capitalbikeshare-mlops) needs to be activated (eg it has pipenv already installed and uses a proper python version):
+Conda environment created in the [main repo](https://github.com/aaalexlit/capitalbikeshare-mlops) needs to be activated (eg it has pipenv already installed and uses a proper python version):
 ```shell
 conda activate capitalbikeshare-mlops
 ```
@@ -44,7 +44,11 @@ To run only unit tests run:
 make test
 ```
 
-Makefile commands should work without activating the pipenv environment, but for the git hooks to work it's better to activate pipenv environment:
+Makefile commands should work without activating the pipenv environment, but for the git hooks to work it's better to activate pipenv environment before committing:
 ```shell
 pipenv shell
 ```
+
+# Github Actions
+
+On the PR to `develop` branch unit and integration tests will run using Github action defined in [pr-tests.yml](.github/workflows/pr-tests.yml)

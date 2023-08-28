@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
 
-# cd to the directory where the script is if it's not a github action execution
+echo "Starting integration test"
+
+# cd to the directory where the script is
+# if it's not a github action execution
 if [[ -z "${GITHUB_ACTIONS}" ]]; then
+  echo "Switching to the script directory: $(dirname "$0")"
   cd "$(dirname "$0")"
 fi
 
 cd ..
 
-source ../.env set
-
+echo "Building and running docker container"
 docker compose up --build -d
 
-sleep 30
+echo "Waiting for the service to spin up"
+sleep 10
 
-pipenv run pytest integration-test/test_docker.py
+echo "Calling dockerized service"
+pipenv run python -m pytest integration-test/test_docker.py
 
 ERROR_CODE=$?
 
@@ -23,4 +28,5 @@ if [ ${ERROR_CODE} != 0 ]; then
     exit ${ERROR_CODE}
 fi
 
+echo "removing docker container"
 docker compose down
